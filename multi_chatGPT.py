@@ -9,12 +9,13 @@ from openai import AzureOpenAI
 from PIL import Image  
 import threading  
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient  
-import certifi  # ここでcertifiをインポート  
+import certifi  
   
 # 環境変数を削除または空に設定  
 os.environ.pop('REQUESTS_CA_BUNDLE', None)  
 os.environ.pop('SSL_CERT_FILE', None)  
   
+# プロキシ設定を環境変数として設定  
 os.environ['HTTP_PROXY'] = 'http://g3.konicaminolta.jp:8080'  
 os.environ['HTTPS_PROXY'] = 'http://g3.konicaminolta.jp:8080'  
   
@@ -46,7 +47,7 @@ blob_service_client = BlobServiceClient.from_connection_string(os.getenv("AZURE_
 container_name = "chat-history"  
 container_client = blob_service_client.get_container_client(container_name)  
   
-st.title("Azure ChatGPT")  
+st.title("Azure OpenAI ChatGPT with Image Upload and RAG")  
   
 # チャット履歴の保存と読み込みの関数  
 lock = threading.Lock()  
@@ -217,29 +218,32 @@ if prompt := st.chat_input("What is up?"):
         ]  
         messages[2]["content"] = [{"type": "text", "text": messages[2]["content"]}] + image_contents  
   
-    # Azure OpenAIからの応答を取得  
-    response = client.chat.completions.create(  
-        model="pm-GPT4o",  
-        messages=messages,  
-        temperature=temperature  
-    )  
+    try:  
+        # Azure OpenAIからの応答を取得  
+        response = client.chat.completions.create(  
+            model="pm-GPT4o",  
+            messages=messages,  
+            temperature=temperature  
+        )  
   
-    # 応答の表示  
-    assistant_response = response.choices[0].message.content  
-    st.session_state.main_chat_messages.append(  
-        {"role": "assistant", "content": assistant_response})  
-    with st.chat_message("assistant"):  
-        st.markdown(assistant_response)  
+        # 応答の表示  
+        assistant_response = response.choices[0].message.content  
+        st.session_state.main_chat_messages.append(  
+            {"role": "assistant", "content": assistant_response})  
+        with st.chat_message("assistant"):  
+            st.markdown(assistant_response)  
   
-    # サイドバーのチャット履歴を更新  
-    if st.session_state.current_chat_index is not None:  
-        if "first_assistant_message" not in st.session_state.sidebar_messages[st.session_state.current_chat_index] or not st.session_state.sidebar_messages[st.session_state.current_chat_index]["first_assistant_message"]:  
-            st.session_state.sidebar_messages[st.session_state.current_chat_index]["first_assistant_message"] = assistant_response  
+        # サイドバーのチャット履歴を更新  
+        if st.session_state.current_chat_index is not None:  
+            if "first_assistant_message" not in st.session_state.sidebar_messages[st.session_state.current_chat_index] or not st.session_state.sidebar_messages[st.session_state.current_chat_index]["first_assistant_message"]:  
+                st.session_state.sidebar_messages[st.session_state.current_chat_index]["first_assistant_message"] = assistant_response  
   
-        st.session_state.sidebar_messages[st.session_state.current_chat_index]["messages"] = st.session_state.main_chat_messages.copy()  
+            st.session_state.sidebar_messages[st.session_state.current_chat_index]["messages"] = st.session_state.main_chat_messages.copy()  
   
-    save_chat_history()  
-    st.rerun()  
+        save_chat_history()  
+        st.rerun()  
+    except Exception as e:  
+        st.error(f"Error: {e}")  
   
 # 初期化時にメインチャットメッセージをロード  
 if st.session_state.current_chat_index is not None:  

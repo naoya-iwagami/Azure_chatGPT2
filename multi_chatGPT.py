@@ -1,6 +1,7 @@
 import os  
 import json  
 import base64  
+import requests  
 from azure.search.documents import SearchClient  
 from azure.core.credentials import AzureKeyCredential  
 from azure.core.pipeline.transport import RequestsTransport  
@@ -13,12 +14,23 @@ import certifi
   
 # 環境変数を削除または空に設定  
 os.environ.pop('REQUESTS_CA_BUNDLE', None)  
-os.environ.pop('SSL_CERT_FILE', None)     
+os.environ.pop('SSL_CERT_FILE', None)  
+  
+# プロキシ設定を環境変数として設定  
+os.environ['HTTP_PROXY'] = 'http://g3.konicaminolta.jp:8080'  
+os.environ['HTTPS_PROXY'] = 'http://g3.konicaminolta.jp:8080'  
+  
+# requestsのデフォルトセッションにプロキシを設定  
+session = requests.Session()  
+session.proxies.update({  
+    'http': os.getenv('HTTP_PROXY'),  
+    'https': os.getenv('HTTPS_PROXY')  
+})  
   
 # Azure OpenAI設定  
 client = AzureOpenAI(  
     api_key=os.getenv("AZURE_OPENAI_KEY"),  
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),  # 環境変数から取得するように修正  
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),  
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")  
 )  
   

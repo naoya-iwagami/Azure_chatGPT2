@@ -1,3 +1,7 @@
-streamlit==1.38.0
-openai==1.51.2
-Pillow==10.4.0
+streamlit==1.40.2  
+azure-search-documents==11.5.2  
+azure-core==1.32.0  
+azure-storage-blob==12.23.1  
+openai==1.54.3  
+Pillow==11.0.0  
+certifi==2024.8.30

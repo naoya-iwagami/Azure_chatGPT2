@@ -17,15 +17,15 @@ os.environ.pop('REQUESTS_CA_BUNDLE', None)
 os.environ.pop('SSL_CERT_FILE', None)
 
 # プロキシ設定を環境変数として設定
-os.environ['HTTP_PROXY'] = 'http://g3.konicaminolta.jp:8080'
-os.environ['HTTPS_PROXY'] = 'http://g3.konicaminolta.jp:8080'
+#os.environ['HTTP_PROXY'] = 'http://g3.konicaminolta.jp:8080'
+#os.environ['HTTPS_PROXY'] = 'http://g3.konicaminolta.jp:8080'
 
 # requestsのデフォルトセッションにプロキシを設定
-session = requests.Session()
-session.proxies.update({
-    'http': os.getenv('HTTP_PROXY'),
-    'https': os.getenv('HTTPS_PROXY')
-})
+#session = requests.Session()
+#session.proxies.update({
+#    'http': os.getenv('HTTP_PROXY'),
+#    'https': os.getenv('HTTPS_PROXY')
+#})
 
 # Azure OpenAI設定
 client = AzureOpenAI(

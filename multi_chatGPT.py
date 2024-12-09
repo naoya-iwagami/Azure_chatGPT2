@@ -12,11 +12,6 @@ import threading
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import certifi
 
-# 環境変数を削除または空に設定
-os.environ.pop('REQUESTS_CA_BUNDLE', None)
-os.environ.pop('SSL_CERT_FILE', None)
-
-
 # Azure OpenAI設定
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_KEY"),
@@ -27,7 +22,7 @@ client = AzureOpenAI(
 # Azure Cognitive Search設定
 search_service_endpoint = os.getenv("AZURE_SEARCH_ENDPOINT")
 search_service_key = os.getenv("AZURE_SEARCH_KEY")
-index_name = "filetest11"
+index_name = "hatakeyama-l8"
 
 # 'certifi'の証明書バンドルを使用するように設定
 transport = RequestsTransport(verify=certifi.where())

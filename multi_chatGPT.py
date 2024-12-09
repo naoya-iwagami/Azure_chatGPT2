@@ -22,7 +22,7 @@ client = AzureOpenAI(
 # Azure Cognitive Search設定
 search_service_endpoint = os.getenv("AZURE_SEARCH_ENDPOINT")
 search_service_key = os.getenv("AZURE_SEARCH_KEY")
-index_name = "hatakeyama-l8"
+index_name = "filetest11"
 
 # 'certifi'の証明書バンドルを使用するように設定
 transport = RequestsTransport(verify=certifi.where())

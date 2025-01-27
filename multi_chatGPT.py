@@ -237,7 +237,7 @@ if prompt := st.chat_input("ご質問を入力してください:"):
     num_messages_to_include = past_message_count * 2  
     messages = [{"role": "system", "content": st.session_state.system_message}]  
     messages.extend([{"role": m["role"], "content": m["content"][:500]} for m in st.session_state.main_chat_messages[-(num_messages_to_include):]])  
-    messages.insert(1, {"role": "system", "content": f"以下のコンテキストを使用してユーザーを支援してください: {context[:1000]}"})  
+    messages.insert(1, {"role": "system", "content": f"以下のコンテキストを使用してユーザーを支援してください: {context[:10000]}"})  
   
     try:  
         # Azure OpenAIからの応答を取得  
